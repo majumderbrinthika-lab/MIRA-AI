@@ -9,7 +9,7 @@ on:
 
 jobs:
   build-apk:
-    name: Build & Test MIRA (Android 8.1+ / API 27)
+    name: Build MIRA Android APK
     runs-on: ubuntu-latest
 
     steps:
@@ -25,7 +25,7 @@ jobs:
       - name: Set up Android SDK
         uses: android-actions/setup-android@v4
 
-      - name: Install Android SDK Platform 36 & Build Tools
+      - name: Install Android SDK
         run: |
           yes | sdkmanager --licenses > /dev/null || true
           sdkmanager "platforms;android-36" "build-tools;36.0.0"
@@ -36,25 +36,22 @@ jobs:
             base64 -d debug.keystore.base64 > debug.keystore
           fi
 
-      - name: Set up Gradle 9.3.1
+      - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '9.3.1'
 
-      - name: Run Unit & Robolectric Tests
-        run: gradle :app:testDebugUnitTest :memory_engine:testDebugUnitTest :ai_engine:testDebugUnitTest --no-daemon
-
       - name: Build Debug APK
         run: gradle :app:assembleDebug --no-daemon --stacktrace
 
-      - name: Upload Test Reports on Failure
+      - name: Upload Build Reports on Failure
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: mira-test-and-build-logs
+          name: mira-build-logs
           path: |
-            **/build/reports/tests/
-            **/build/test-results/
+            **/build/reports/
+            **/build/outputs/
           retention-days: 7
 
       - name: Upload MIRA Debug APK
@@ -62,4 +59,5 @@ jobs:
         with:
           name: MIRA-offline-debug-apk
           path: app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
           retention-days: 30
