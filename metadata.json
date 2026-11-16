@@ -1,0 +1,6 @@
+{
+  "name": "MIRA",
+  "description": "MIRA — Privacy-first offline AI companion for Android 8.1+ with Bengali, English & Hindi support, local Room memory, female voice engine, and modular GGUF & portrait studio.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
